@@ -1,26 +1,34 @@
-// Import required modules.
+/**
+ * Server Entry Point
+ */
+
+// Import Required Modules
 import cors from 'cors';
 import express from 'express';
-// import https from 'https';
 
-// Import server configuration.
-import { config } from '../config/config';
+// Import Server Operations
+import Operation from './operations';
 
-// Setup Express
+// Import Server Configuration
+import { config } from '../config';
+
+// Set Express Port
+const port = process.env.port || config.port;
+
+// Initialize Express
 const app = express();
 
+// Remove Express `X-Powered-By` Header
 app.disable('x-powered-by');
 
+// Enable CORS Requests (All)
 app.use(cors());
 
-// Setup Server
-const port = process.env.port || config.port;
-// const httpsServer = https.createServer(config.ssl, app);
-
 function initServer() {
-    app.listen(port, () =>
+    Operation.updateAllSources();
+    /* app.listen(port, () =>
         console.log(`REST API running on http://localhost:${port}`)
-    );
+    ); */
 }
 
 export default initServer;

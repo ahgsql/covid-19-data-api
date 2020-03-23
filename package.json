@@ -1,0 +1,49 @@
+{
+    "name": "covid-19-data-api",
+    "description": "Coronavirus / COVID-19 Data Tracking API",
+    "version": "1.0.0",
+    "keywords": [
+        "coronavirus",
+        "covid-19",
+        "api"
+    ],
+    "homepage": "https://github.com/jdaio/covid-19-data-api#readme",
+    "author": "Jamal Ali-Mohammed <jamal@digitalheat.co>",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/jdaio/covid-19-data-api.git"
+    },
+    "bugs": {
+        "url": "https://github.com/jdaio/covid-19-data-api/issues"
+    },
+    "license": "MIT",
+    "engines": {
+        "node": ">=12",
+        "npm": ">=6"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.8.4",
+        "@babel/core": "^7.9.0",
+        "@babel/plugin-proposal-class-properties": "^7.8.3",
+        "@babel/plugin-transform-runtime": "^7.9.0",
+        "@babel/preset-env": "^7.9.0",
+        "babel-eslint": "^10.1.0",
+        "eslint": "^6.8.0",
+        "eslint-config-airbnb": "^18.1.0",
+        "eslint-plugin-import": "^2.20.1",
+        "eslint-plugin-node": "^11.0.0",
+        "eslint-plugin-prettier": "^3.1.2",
+        "eslint-plugin-promise": "^4.2.1",
+        "esm": "^3.2.25",
+        "nodemon": "^2.0.2",
+        "prettier": "^2.0.1"
+    },
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.17.1"
+    },
+    "scripts": {
+        "start": "node -r esm ./src/index.js",
+        "dev": "nodemon --exec node -r esm ./src/index.js"
+    }
+}

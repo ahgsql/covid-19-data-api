@@ -1,5 +1,7 @@
 # COVID-19 Data API
 
+***Currently under development.***
+
 A Node.js + Express powered API that provides information about the 2019 - 2020 Novel Coronavirus pandemic.
 
 ## Setting Up & Running the Server

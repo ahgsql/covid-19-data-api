@@ -1,14 +1,31 @@
 import fs from 'fs';
 import https from 'https';
+
+// Import Utilities
+import Utils from '../../utils';
+
+// Import Configuration
 import { config } from '../../config';
 
-const sourceDirectory = './src/sources/';
-
-async function updateSource(sourceURL, sourceName) {
+/**
+ * @async
+ * @function updateSource
+ * @description Creates/updates a singular data source file.
+ *
+ * @param { string } baseURL The base url directory where the file is located.
+ * @param { string } fileName Name of file to be retrieved.
+ * @param { string } localDirectory Directory to write files to.
+ *
+ * @returns { object } Promise of source update request.
+ */
+async function updateSource(baseURL, fileName, localDirectory) {
     return new Promise((resolve, reject) => {
         const requestSourceFile = https.get(
-            `${sourceURL + sourceName}`,
+            `${baseURL + fileName}`,
             (response) => {
+                console.log(`Updating source for '${fileName}'...`);
+
+                // Throw error if server responds with inappropriate status code.
                 if (response.statusCode < 200 || response.statusCode >= 300) {
                     return reject(
                         new Error(
@@ -17,52 +34,58 @@ async function updateSource(sourceURL, sourceName) {
                     );
                 }
 
-                fs.stat(sourceDirectory, (error) => {
-                    if (error) {
-                        console.log(
-                            "Sources directory doesn't exist, creating it now..."
-                        );
-
-                        return fs.mkdir(sourceDirectory, (error) => {
-                            if (error) throw error;
-                        });
-                    }
-                });
-
-                let writeSource = fs.createWriteStream(
-                    sourceDirectory + sourceName
+                // Create stream to write file to.
+                const writeSourceFile = fs.createWriteStream(
+                    localDirectory + fileName
                 );
 
-                response.pipe(writeSource);
+                response.pipe(writeSourceFile);
 
-                response.on('end', () => {
-                    console.log(
-                        `Source for '${sourceName}' has been successfully updated.`
-                    );
-
-                    return resolve();
+                writeSourceFile.on('error', (error) => {
+                    if (error) throw new Error(error);
                 });
 
-                writeSource.on('error', (error) => {
-                    if (error) throw error;
-                });
+                response.on('end', () =>
+                    resolve(
+                        console.log(
+                            `Source for '${fileName}' has been successfully updated.`
+                        )
+                    )
+                );
             }
         );
 
-        requestSourceFile.on('error', (error) => reject(error));
+        requestSourceFile.on('error', (error) => reject(new Error(error)));
 
+        // End request.
         requestSourceFile.end();
     });
 }
 
+/**
+ * @async
+ * @function updateAllSources
+ * @description Creates/updates all data source files.
+ *
+ * @param { string } sourceBaseURL The base url directory where the files are located.
+ * @param { array } sourceFiles Array of source file objects to update.
+ * @param { string } sourceDirectory Directory where source files are written.
+ *
+ * @returns { object } Promises of source update requests.
+ */
 export default async function updateAllSources(
     sourceBaseURL = config.sources.base,
-    sourceFiles = config.sources.files
+    sourceFiles = config.sources.files,
+    sourceDirectory = config.sources.localDir
 ) {
+    // Check if source directory exists and create it if it doesn't.
+    Utils.getDirectory(sourceDirectory);
+
     const requests = [];
 
+    // Create promises for each source file to be updated.
     for (const file of sourceFiles) {
-        const promise = updateSource(sourceBaseURL, file);
+        const promise = updateSource(sourceBaseURL, file.name, sourceDirectory);
 
         requests.push(promise);
     }

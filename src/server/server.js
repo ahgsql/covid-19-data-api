@@ -7,7 +7,7 @@ import cors from 'cors';
 import express from 'express';
 
 // Import Server Operations
-import Operation from './operations';
+import Server from './operations';
 
 // Import Server Configuration
 import { config } from '../config';
@@ -24,11 +24,10 @@ app.disable('x-powered-by');
 // Enable CORS Requests (All)
 app.use(cors());
 
-function initServer() {
-    Operation.updateAllSources();
-    /* app.listen(port, () =>
-        console.log(`REST API running on http://localhost:${port}`)
-    ); */
-}
+export default async function init() {
+    await Server.updateAllSources();
 
-export default initServer;
+    app.listen(port, () =>
+        console.log(`COVID-19 Data API running on http://localhost:${port}.`)
+    );
+}

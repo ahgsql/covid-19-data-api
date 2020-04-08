@@ -12,18 +12,16 @@
 
 import fs from 'fs';
 
-async function getDirectory(dir, makeDir = true) {
+async function getDirectory(dir, createDir = true) {
     // Check if directory parameter was provided for the function.
     if (typeof dir === 'undefined' || dir === null) {
-        throw new Error(
-            'No path was specified, unable to check for directory existence.'
-        );
+        throw new Error('No path was specified, unable to check for directory existence.');
     }
 
     // Use `fs.stat()` to verify existence of directory.
     await fs.stat(dir, (error) => {
         // If the `makeDir` is set to true, it'll be created.
-        if (error && makeDir) {
+        if (error && createDir) {
             return fs.mkdir(dir, (err) => {
                 if (err) throw new Error(err);
             });
